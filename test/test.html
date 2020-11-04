@@ -20,6 +20,11 @@
                 color: white;
                 padding: 3px;
             }
+
+            .lowOrHi{
+                color: white;
+                padding: 3px;
+            }
         </style>
     </head>
 
@@ -75,8 +80,10 @@
                     lastResult.style.backgroundColor='red';
                     if(userGuess < randomNumber){
                         lowOrHi.textContent='你猜低了！';
+                        lowOrHi.style.backgroundColor='blue';
                     }else if(userGuess > randomNumber){
                         lowOrHi.textContent='你猜高了';
+                        lowOrHi.style.backgroundColor='blue';
                     }
                 }        
 
