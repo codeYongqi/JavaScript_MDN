@@ -98,7 +98,7 @@
       Teacher.prototype = Object.create(Person.prototype);
       Teacher.prototype.constructor = Teacher;
 
-      Teacher.prototype.greeting = function () {
+      Teacher.prototype.greeting = function (){
           let prefix;
           if(this.gender === 'male' || this.gender === 'Male' || this.gender === 'm' || this.gender === "M"){
               prefix = 'Mr.'
