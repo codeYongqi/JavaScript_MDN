@@ -1,128 +1,119 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <title>猜数字</title>
-        
-        <style>
-            html{
-                font-family: sans-serif;
+  <head>
+    <meta charset="utf-8">
+    <title>Object-oriented JavaScript inheritance</title>
+  </head>
+
+  <body>
+    <div>
+      <label for="jscode">Enter code:</label>
+      <input type="text" id="jscode">
+      <button>Submit code</button>
+    </div>
+
+    <p></p>
+  </body>
+
+    <script>
+      const input = document.querySelector('input');
+      const btn = document.querySelector('button');
+      const para = document.querySelector('p');
+
+      btn.onclick = function() {
+        const code = input.value;
+        para.textContent = eval(code);
+      }
+
+      function Person(first, last, age, gender, interests) {
+        this.name = {
+          first,
+          last
+        };
+        this.age = age;
+        this.gender = gender;
+        this.interests = interests;
+      };
+
+      Person.prototype.bio = function() {
+        // First define a string, and make it equal to the part of
+        // the bio that we know will always be the same.
+        let string = this.name.first + ' ' + this.name.last + ' is ' + this.age + ' years old. ';
+        // define a variable that will contain the pronoun part of
+        // the second sentence
+        let pronoun;
+
+        // check what the value of gender is, and set pronoun
+        // to an appropriate value in each case
+        if(this.gender === 'male' || this.gender === 'Male' || this.gender === 'm' || this.gender === 'M') {
+          pronoun = 'He likes ';
+        } else if(this.gender === 'female' || this.gender === 'Female' || this.gender === 'f' || this.gender === 'F') {
+          pronoun = 'She likes ';
+        } else {
+          pronoun = 'They like ';
+        }
+
+        // add the pronoun string on to the end of the main string
+        string += pronoun;
+
+        // use another conditional to structure the last part of the
+        // second sentence depending on whether the number of interests
+        // is 1, 2, or 3
+        if(this.interests.length === 1) {
+          string += this.interests[0] + '.';
+        } else if(this.interests.length === 2) {
+          string += this.interests[0] + ' and ' + this.interests[1] + '.';
+        } else {
+          // if there are more than 2 interests, we loop through them
+          // all, adding each one to the main string followed by a comma,
+          // except for the last one, which needs an and & a full stop
+          for(let i = 0; i < this.interests.length; i++) {
+            if(i === this.interests.length - 1) {
+              string += 'and ' + this.interests[i] + '.';
+            } else {
+              string += this.interests[i] + ', ';
             }
+          }
+        }
 
-            body{
-                width: 50%;
-                max-width: 800px;
-                min-width: 480px;
-                margin: 0 auto;
-            }
+        // finally, with the string built, we alert() it
+        alert(string);
+      };
 
-            .lastResult{
-                color: white;
-                padding: 3px;
-            }
+      Person.prototype.greeting = function() {
+        alert('Hi! I\'m ' + this.name.first + '.');
+      };
 
-            .lowOrHi{
-                color: white;
-                padding: 3px;
-            }
-        </style>
-    </head>
+      Person.prototype.farewell = function() {
+        alert(this.name.first + ' has left the building. Bye for now!');
+      }
 
-    <body>
-        <h1>猜数字游戏</h1>
-        <p>我刚才随机选定了一个100以内的自然数。看你能否在 10 次以内猜中它。每次我都会告诉你所猜的结果是高了还是低了。</p>
-        <div class="form">
-            <label for="guessField">请猜数：</label>
-            <input type="text" id="guessField" class="guessField">
-            <input type="submit" value="我猜" class="guessSubmit">   
-        </div>
+      function Teacher(first,last,age,gender,interests,subject) {
+          Person.call(this,first,last,age,gender,interests);
 
-        <div class="resultParas">
-            <p class="guesses"></p>
-            <p class="lastResult"></p>
-            <p class="lowOrHi"></p>
-        </div>
+          this.subject = subject;
+          
+      }
 
-        <script>
-            let randomNumber = Math.floor(Math.random() * 100) + 1;
-            
-            const guesses=document.querySelector('.guesses');
-            const lastResult=document.querySelector('.lastResult');
-            const lowOrHi=document.querySelector('.lowOrHi');
+      Teacher.prototype = Object.create(Person.prototype);
+      Teacher.prototype.constructor = Teacher;
 
-            const guessSubmit=document.querySelector('.guessSubmit');
-            const guessField=document.querySelector('.guessField');
+      Teacher.prototype.greeting = function ( {
+          let prefix;
+          if(this.gender === 'male' || this.gender === 'Male' || this.gender === 'm' || this.gender === "M"){
+              prefix = 'Mr.'
+          }else if(this.gender === 'female' || this.gender === 'Female' || this.gender === 'f' || this.gender === 'F'){
+              prefix = 'Mrs.' 
+          }else{
+              prefix = 'Mx.';
+          }
 
-            let guessCount=1;
-            let resetButton;
+          alert('Hello. My name is '+prefix+' ' +this.name.last + ', and I teach'+this.subject+'.');
+      }
+    
+      let person1 = new Person('Tammi', 'Smith', 17, 'female', ['music', 'skiing', 'kickboxing']);
+      let teacher = new Teacher('Dave', 'Griffiths', 31, 'male', ['football', 'cookery'], 'mathematics');
 
-            guessField.focus();
-            
-            function checkGuess() {
-                let userGuess=Number(guessField.value);
-                if(guessCount === 1){
-                    guesses.textContent='上次猜的数: ';
-                }
 
-                guesses.textContent += userGuess+' ';
-                //检测是否猜对了
-                if(userGuess === randomNumber){
-                    lastResult.textContent = '恭喜你，猜对了';
-                    lastResult.style.backgroundColor='green';
-                    lowOrHi.textContent='';
-                    setGameOver();
-                }else if(guessCount === 10){
-                    lastResult.textContent='!!!GAME OVER!!!';
-                    lowOrHi.textContent='';
-                    setGameOver();
-                }else{
-                    lastResult.textContent='你猜错了！';
-                    lastResult.style.backgroundColor='red';
-                    if(userGuess < randomNumber){
-                        lowOrHi.textContent='你猜低了！';
-                        lowOrHi.style.backgroundColor='blue';
-                    }else if(userGuess > randomNumber){
-                        lowOrHi.textContent='你猜高了';
-                        lowOrHi.style.backgroundColor='blue';
-                    }
-                }        
-
-                guessCount++;
-                guessField.value='';
-                guessField.focus();
-            }
-        
-            guessSubmit.addEventListener('click', checkGuess);
-
-            function setGameOver() {
-                guessField.disable=true;
-                guessSubmit.disable=true;
-                resetButon=doucument.createElement('button');
-                resetButon.textContent='开始新游戏';
-                doucument.body.appendChild(resetButton);
-                resetButton.addEventListener('click',resetGame);
-            }
-            
-
-            function resetGame() {
-                guessCount=1;
-
-                const resetParas=document.querySelectorAll('.resultParas p');
-                for(let i=0;i<resetParas.length;i++){
-                    resetParas[i].textContent='';
-                }
-
-                resetButton.parentNode.removeChild(resetButton);
-
-                guessField.disable=false;
-                guessSubmit.disable=false;
-                guessField.value='';
-                guessField.focus();
-
-                lastResult.style.backgroundColor='white';
-
-                randomNumber=Math.floor(Math.random()*100)+1;
-            }
-        </script>
-     </body>
+    </script>
 </html>

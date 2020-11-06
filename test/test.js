@@ -1,12 +1,9 @@
-let randomNumber=Math.floor(Math.random()*100)+1;
+function doSomething(){}
+doSomething.prototype.foo='bar';
 
-const guesses=doucument.querySelector('.guesses');
-const lastResult=doucument.querySelector('.lastResult');
-const lowOrHi=doucument.querySelector('.lowOrHi');
+var doSomeInstancing = new doSomething();
+doSomeInstancing.prop = 'some value';
+console.log(doSomeInstancing);
 
-const guessSubmit=doucument.querySelector('.guessSubmit');
-const guessField=doucument.querySelector('.guessField');
-
-let guessCount=1;
-let resetButton;
-
+var person1=new doSomething();
+var person2 = Object.create(person1);
